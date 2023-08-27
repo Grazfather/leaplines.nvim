@@ -29,7 +29,7 @@
     targets))
 
 (fn leap [direction]
-  ((. (require :leap) :leap) {:target_windows [(vim.api.nvim_get_current_win)]
+  ((. (require :leap) :leap) {:backward (= direction :up)
                               :targets (get-line-starts direction)}))
 
 {: leap}

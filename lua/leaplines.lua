@@ -49,6 +49,6 @@ local function get_line_starts(direction)
   return targets
 end
 local function leap(direction)
-  return (require("leap")).leap({target_windows = {vim.api.nvim_get_current_win()}, targets = get_line_starts(direction)})
+  return (require("leap")).leap({backward = (direction == "up"), targets = get_line_starts(direction)})
 end
 return {leap = leap}
