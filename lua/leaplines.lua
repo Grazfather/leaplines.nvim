@@ -1,4 +1,4 @@
-local function get_line_starts(direction)
+local function get_line_starts(direction, skip_range)
   local winid = vim.api.nvim_get_current_win()
   local _let_1_ = vim.fn.getwininfo(winid)
   local wininfo = _let_1_[1]
@@ -15,6 +15,7 @@ local function get_line_starts(direction)
   else
     bottom = wininfo.botline
   end
+  local skip_range0 = (skip_range or 2)
   local targets = {}
   local lnum = top
   while (lnum <= bottom) do
@@ -22,7 +23,7 @@ local function get_line_starts(direction)
     if (fold_end ~= -1) then
       lnum = (fold_end + 1)
     else
-      if (lnum ~= cur_line) then
+      if ((lnum < (cur_line - skip_range0)) or (lnum > (cur_line + skip_range0))) then
         table.insert(targets, {pos = {lnum, 1}})
       else
       end
@@ -48,7 +49,7 @@ local function get_line_starts(direction)
   end
   return targets
 end
-local function leap(direction)
-  return (require("leap")).leap({backward = (direction == "up"), targets = get_line_starts(direction)})
+local function leap(direction, skip_range)
+  return (require("leap")).leap({backward = (direction == "up"), targets = get_line_starts(direction, skip_range)})
 end
 return {leap = leap}

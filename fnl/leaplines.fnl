@@ -1,9 +1,10 @@
-(fn get-line-starts [direction]
+(fn get-line-starts [direction skip-range]
   (let [winid (vim.api.nvim_get_current_win)
         [wininfo] (vim.fn.getwininfo winid)
         cur-line (vim.fn.line ".")
         top (if (= direction :down) cur-line wininfo.topline)
         bottom (if (= direction :up) cur-line wininfo.botline)
+        skip-range (or skip-range 2)
         targets []]
     (var lnum top)
     (while (<= lnum bottom)
@@ -12,9 +13,8 @@
       (if (not= fold-end -1)
         (set lnum (+ fold-end 1))
         (do
-          (when (not= lnum cur-line)
-            (table.insert targets {:pos [lnum 1]
-                                   }))
+          (when (or (< lnum (- cur-line skip-range)) (> lnum (+ cur-line skip-range)))
+            (table.insert targets {:pos [lnum 1]}))
           (set lnum (+ lnum 1)))))
 
     ; Sort them by vertical screen distance from cursor.
@@ -28,8 +28,8 @@
                             (< (rows-from-cur t1) (rows-from-cur t2)))))
     targets))
 
-(fn leap [direction]
+(fn leap [direction skip-range]
   ((. (require :leap) :leap) {:backward (= direction :up)
-                              :targets (get-line-starts direction)}))
+                              :targets (get-line-starts direction skip-range)}))
 
 {: leap}

@@ -4,6 +4,9 @@
 [leap.nvim](https://github.com/ggandor/leap.nvim) to give you an easy way to
 jump to the start of a specific line.
 
+Simply call `leaplines.leap` with a direction ("up" or "down"), and an optional
+number of lines to skip around the cursor (default 2).
+
 ## Installation
 ### Lazy.nvim
 ```lua
